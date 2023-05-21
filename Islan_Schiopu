@@ -1,0 +1,68 @@
+import time
+
+import requests
+import schedule as schedule
+from bs4 import BeautifulSoup
+
+# Exercitiu 1
+def get_product_prices(product_list):
+    url = "https://www.emag.ro"
+
+    prices = {}
+
+    try:
+        for product in product_list:
+        
+            product_url = f"{url}/{product}"
+
+            response = requests.get(product_url)
+            response.raise_for_status()  
+
+            soup = BeautifulSoup(response.content, "html.parser")
+
+            price_element = soup.find("p", class_="product-new-price")
+
+            if price_element:
+                price = price_element.text.strip()
+                prices[product] = price
+            else:
+                prices[product] = "Price not available"
+
+        return prices
+
+    except requests.exceptions.RequestException as e:
+        print("An error occurred:", e)
+
+product_list = ["laptop-apple-macbook-air-13-inch-true-tone-procesor-apple-m1-8-nuclee-cpu-si-7-nuclee-gpu-8gb-256gb-space-grey-int-kb-mgn63ze-a/pd/DQ5BL7MBM/",
+                "laptop-asus-tuf-gaming-intel-core-i5-11400h-15-6inch-ram-8gb-2-ssd-512gb-nvidia-geforce-rtx-3050-ti-4gb-free-dos-eclipse-gray-fx506he-hn012/pd/DHSYXZMBM/",
+                "laptop-lenovo-thinkpad-p1-gen-5-cu-procesor-intelr-coretm-i9-12900h-pana-la-5-ghz-16-wqxga-ips-165hz-16gb-ddr5-512gb-ssd-nvidia-rtx-a5500-16gb-gddr6-windows-11-dg-windows-10-pro-black-21dc0014ri/pd/DFGW1QMBM/?",
+                "laptop-hp-zbook-fury-16-g9-16-wuxga-intel-core-i9-12950hx-3-6ghz-64gb-ram-4-x-512gb-ssd-nvidia-rtx-a5500-16gb-win-11-pro-fury-cto-64gb/pd/D6PPHLMBM/"]
+
+prices = get_product_prices(product_list)
+
+for product, price in prices.items():
+    print("Product:", product)
+    print("Price:", price)
+    print("-" * 50)
+
+# Sfarsit ex 1
+
+# Exercitiul 2
+
+def job():
+    prices = get_product_prices(product_list)
+
+    for product, price in prices.items():
+        print("Product:", product)
+        print("Price:", price)
+        print("-" * 50)
+
+schedule.every(24).hours.do(job)
+
+while True:
+    schedule.run_pending()
+    time.sleep(1)
+
+# Sfarsit Exercitiul 2
+
+# Exercitiul 3
