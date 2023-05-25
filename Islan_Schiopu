@@ -1,24 +1,24 @@
 import time
 
-import requests
+import requests  #import librarii
 import schedule as schedule
-from bs4 import BeautifulSoup
+from bs4 import BeautifulSoup  #librarie pentru accesarea informatiilor necesare
 
 # Exercitiu 1
-def get_product_prices(product_list):
+def get_product_prices(product_list):  #creeaza o lista cu link-urile produselor ca input si returneaza un "dictionar" care contine numele si pretul 
     url = "https://www.emag.ro"
 
     prices = {}
 
     try:
-        for product in product_list:
+        for product in product_list:  #defineste o lista care contine link-urile produselor 
         
             product_url = f"{url}/{product}"
 
             response = requests.get(product_url)
             response.raise_for_status()  
 
-            soup = BeautifulSoup(response.content, "html.parser")
+            soup = BeautifulSoup(response.content, "html.parser") #analizeaza continutul html-ului si extrage pretul
 
             price_element = soup.find("p", class_="product-new-price")
 
@@ -49,17 +49,17 @@ for product, price in prices.items():
 
 # Exercitiul 2
 
-def job():
-    prices = get_product_prices(product_list)
+def job():  #functie pentru preluarea datelor odata la 24H
+    prices = get_product_prices(product_list) #rechemarea functiei get_product_prices
 
     for product, price in prices.items():
         print("Product:", product)
         print("Price:", price)
-        print("-" * 50)
+        print("-" * 50) #printeaza numele produsului si pretul 
 
-schedule.every(24).hours.do(job)
+schedule.every(24).hours.do(job) #definire timp la care se ruleaza functia 
 
-while True:
+while True: #bucla infinita necesara pentru rularea programului in continuu 
     schedule.run_pending()
     time.sleep(1)
 
